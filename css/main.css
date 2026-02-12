@@ -28,3 +28,35 @@
     font-size: 0.8rem;
     color: #666;
 }
+
+.first-column.locked {
+    background-color: #f0f0f0;
+    opacity: 0.7;
+}
+
+.first-column.locked .card-form {
+    pointer-events: none;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #4CAF50;
+    transition: width 0.3s;
+}
+
+.card {
+    /* ... */
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}

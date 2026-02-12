@@ -25,11 +25,13 @@
     </form>
     <div class="cards-container">
         <note-card 
-            v-for="card in columns.first" 
-            :key="card.id" 
-            :title="card.title" 
-            :items="card.items"
-        ></note-card>
+    v-for="card in columns.first" 
+    :key="card.id" 
+    :title="card.title" 
+    :items="card.items"
+    :checked-items="card.checkedItems"
+    @item-checked="handleItemChecked(card.id, $event)"
+></note-card>
     </div>
 </div>
             <div class="column second-column">

@@ -1,15 +1,29 @@
 Vue.component('note-card', {
-    props: ['title', 'items'],
+    props: ['title', 'items', 'checkedItems'],
     template: `
         <div class="card">
             <h3>{{ title }}</h3>
             <ul>
                 <li v-for="(item, index) in items" :key="index">
+                    <input 
+                        type="checkbox" 
+                        v-model="checkedItems" 
+                        :value="index"
+                        @change="$emit('item-checked', index)"
+                    >
                     {{ item }}
                 </li>
             </ul>
+            <div class="progress">
+                {{ progress }}% Complete
+            </div>
         </div>
-    `
+    `,
+    computed: {
+        progress() {
+            return Math.round((this.checkedItems.length / this.items.length) * 100);
+        }
+    }
 });
 
 let app = new Vue({
@@ -53,6 +67,35 @@ let app = new Vue({
                 title: '',
                 items: ['', '', '']
             };
+        },
+        handleItemChecked(cardId, index) {
+            const card = this.findCard(cardId);
+            if (!card.checkedItems.includes(index)) {
+                card.checkedItems.push(index);
+                this.checkProgress(card);
+            }
+        },
+        findCard(id) {
+            // Find card in all columns
+        },
+        checkProgress(card) {
+            const progress = card.checkedItems.length / card.items.length;
+            
+            if (progress > 0.5 && this.isInFirstColumn(card)) {
+                this.moveCard(card, 'first', 'second');
+            } else if (progress === 1 && this.isInSecondColumn(card)) {
+                this.moveCard(card, 'second', 'third');
+            }
+        },
+        moveCard(card, from, to) {
+            this.columns[from] = this.columns[from].filter(c => c.id !== card.id);
+            this.columns[to].push(card);
+        },
+        isInFirstColumn(card) {
+            return this.columns.first.some(c => c.id === card.id);
+        },
+        isInSecondColumn(card) {
+            return this.columns.second.some(c => c.id === card.id);
         }
     },
     computed: {

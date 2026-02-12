@@ -13,15 +13,31 @@
     <div id="app">
         <div class="columns">
             <div class="column first-column">
-                <h2>First Column (Max 3)</h2>
-                <div class="cards-container"></div>
-            </div>
+    <h2>First Column</h2>
+    <form @submit.prevent="addNewCard" class="card-form">
+        <input v-model="newCard.title" placeholder="Title" required>
+        <div v-for="(item, index) in newCard.items" :key="index" class="item-row">
+            <input v-model="newCard.items[index]" placeholder="Item">
+            <button type="button" @click="removeItem(index)" class="remove-btn">-</button>
+        </div>
+        <button type="button" @click="addItem" class="add-btn">+ Add Item</button>
+        <button type="submit" :disabled="isInvalidCard">Add Card</button>
+    </form>
+    <div class="cards-container">
+        <note-card 
+            v-for="card in columns.first" 
+            :key="card.id" 
+            :title="card.title" 
+            :items="card.items"
+        ></note-card>
+    </div>
+</div>
             <div class="column second-column">
-                <h2>Second Column (Max 5)</h2>
+                <h2>Second Column</h2>
                 <div class="cards-container"></div>
             </div>
             <div class="column third-column">
-                <h2>Third Column (Unlimited)</h2>
+                <h2>Third Column</h2>
                 <div class="cards-container"></div>
             </div>
         </div>

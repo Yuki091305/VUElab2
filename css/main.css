@@ -14,3 +14,11 @@
 .cards-container {
     margin-top: 10px;
 }
+
+.card {
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

@@ -5,12 +5,10 @@ Vue.component('note-card', {
             <h3>{{ title }}</h3>
             <ul>
                 <li v-for="(item, index) in items" :key="index">
-                    <input 
-                        type="checkbox" 
-                        v-model="checkedItems" 
-                        :value="index"
-                        @change="$emit('item-checked', index)"
-                    >
+                    <input type="checkbox" 
+                           v-model="checkedItems" 
+                           :value="index"
+                           @change="$emit('item-checked', index)">
                     {{ item }}
                 </li>
             </ul>
@@ -55,17 +53,17 @@ let app = new Vue({
             }
         },
         addNewCard() {
-            if (this.isInvalidCard) return;
-            
-            this.columns.first.push({
-                id: Date.now(),
-                title: this.newCard.title,
-                items: this.newCard.items.filter(item => item.trim() !== ''),
-                checkedItems: []
-            });
-            
-            this.resetNewCard();
-        },
+    if (this.isInvalidCard || this.isAddButtonDisabled) return;
+    
+    this.columns.first.push({
+        id: Date.now(),
+        title: this.newCard.title,
+        items: this.newCard.items.filter(item => item.trim() !== ''),
+        checkedItems: []
+    });
+    
+    this.resetNewCard();
+},
         resetNewCard() {
             this.newCard = {
                 title: '',
@@ -80,24 +78,25 @@ let app = new Vue({
             }
         },
         findCard(id) {
-            // Find card in all columns
-        },
-        checkProgress(card) {
-            const progress = card.checkedItems.length / card.items.length;
-            
-            if (this.isFirstColumnLocked && progress > 0.5) {
-                return; // Skip if locked
-            }
+        return [
+            ...this.columns.first,
+            ...this.columns.second,
+            ...this.columns.third
+        ].find(card => card.id === id);
+    },
+    checkProgress(card) {
+        const progress = card.checkedItems.length / card.items.length;
+        // Only process if card is still in current column
+        if (this.isInFirstColumn(card) && progress > 0.5) {
+            this.moveCard(card, 'first', 'second');
+        } 
+        else if (this.isInSecondColumn(card) && progress === 1) {
+            this.moveCard(card, 'second', 'third');
+        }
         },
         moveCard(card, from, to) {
-            this.columns[from] = this.columns[from].filter(c => c.id !== card.id);
-            this.columns[to].push(card);
-            if (to === 'second' && this.columns.second.length >= 5) {
-                this.isFirstColumnLocked = true;
-            }
-            if (from === 'second' && to === 'third') {
-                this.isFirstColumnLocked = false;
-            }
+        this.columns[from] = this.columns[from].filter(c => c.id !== card.id);
+        this.columns[to].push(card);
         },
         isInFirstColumn(card) {
             return this.columns.first.some(c => c.id === card.id);
@@ -105,33 +104,31 @@ let app = new Vue({
         isInSecondColumn(card) {
             return this.columns.second.some(c => c.id === card.id);
         },
-        checkProgress(card) {
-    const progress = card.checkedItems.length / card.items.length;
-    
-    if (progress > 0.5 && this.isInFirstColumn(card)) {
-        this.moveCard(card, 'first', 'second');
-    } else if (progress === 1 && this.isInSecondColumn(card)) {
-        this.moveCard(card, 'second', 'third');
-    }
-    
-    // Prevent duplicate moves
-    if (progress === 1 && this.isInFirstColumn(card)) {
-        this.moveCard(card, 'first', 'second');
-    }
-}
+
+        
     },
     computed: {
         isInvalidCard() {
-            const itemsValid = this.newCard.items.filter(i => i.trim() !== '').length >= 3;
-            return !this.newCard.title || !itemsValid;
-        },
+    const validItems = this.newCard.items.filter(i => i.trim() !== '');
+    return !this.newCard.title || 
+           validItems.length < 3 || 
+           validItems.length > 5;
+},
         isAddButtonDisabled() {
-            return this.isFirstColumnLocked || this.columns.first.length >= 3;
+             return this.columns.first.length >= 3 || this.isFirstColumnLocked;
         },
         columnClasses() {
         return {
             'locked': this.isFirstColumnLocked
         };
+    },
+    isFirstColumnLocked() {
+        // Lock when second column is full AND has partially completed cards
+        return this.columns.second.length >= 5 && 
+               this.columns.second.some(card => {
+                   const progress = card.checkedItems.length / card.items.length;
+                   return progress > 0.5 && progress < 1;
+               });
     }
     }
 });

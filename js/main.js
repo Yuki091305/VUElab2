@@ -1,5 +1,5 @@
 Vue.component('note-card', {
-    props: ['title', 'items', 'checkedItems'],
+    props: ['title', 'items', 'checkedItems', 'completedAt'],
     template: `
         <div class="card">
             <h3>{{ title }}</h3>
@@ -17,6 +17,9 @@ Vue.component('note-card', {
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+            </div>
+            <div v-if="completedAt" class="completion-time">
+                Completed: {{ formatCompletionTime(completedAt) }}
             </div>
         </div>
     `,
@@ -39,7 +42,6 @@ let app = new Vue({
             second: [],
             third: []
         },
-        isFirstColumnLocked: false,
     },
     methods: {
         addItem() {
@@ -85,8 +87,12 @@ let app = new Vue({
         ].find(card => card.id === id);
     },
     checkProgress(card) {
-        const progress = card.checkedItems.length / card.items.length;
-        // Only process if card is still in current column
+       const progress = card.checkedItems.length / card.items.length;
+        
+        if (this.isFirstColumnLocked && this.isInFirstColumn(card)) {
+            return;
+        }
+        
         if (this.isInFirstColumn(card) && progress > 0.5) {
             this.moveCard(card, 'first', 'second');
         } 
@@ -95,6 +101,10 @@ let app = new Vue({
         }
         },
         moveCard(card, from, to) {
+        if (to === 'third') {
+            card.completedAt = new Date().toISOString();
+        }
+        
         this.columns[from] = this.columns[from].filter(c => c.id !== card.id);
         this.columns[to].push(card);
         },
@@ -123,12 +133,14 @@ let app = new Vue({
         };
     },
     isFirstColumnLocked() {
-        // Lock when second column is full AND has partially completed cards
-        return this.columns.second.length >= 5 && 
-               this.columns.second.some(card => {
-                   const progress = card.checkedItems.length / card.items.length;
-                   return progress > 0.5 && progress < 1;
-               });
-    }
+        const isSecondColumnFull = this.columns.second.length >= 5;
+            
+            const hasCardOver50Percent = this.columns.first.some(card => {
+                const progress = card.checkedItems.length / card.items.length;
+                return progress > 0.5;
+            });
+            
+            return isSecondColumnFull && hasCardOver50Percent;
+        }
     }
 });

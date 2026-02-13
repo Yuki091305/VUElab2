@@ -13,20 +13,18 @@
     <div id="app">
         <div class="columns">
             <div class="column first-column" :class="{ locked: isFirstColumnLocked }">
-    <h2>First Column</h2>
-    <form @submit.prevent="addNewCard" 
-          class="card-form"
-          :disabled="isFirstColumnLocked">
-                    <input v-model="newCard.title" placeholder="Title" required>
+                <h2>First Column</h2>
+                 <form @submit.prevent="addNewCard" class="card-form">
+                    <input v-model="newCard.title" placeholder="Title" required :disabled="isFirstColumnLocked">
                     <div v-for="(item, index) in newCard.items" :key="index" class="item-row">
-                        <input v-model="newCard.items[index]" placeholder="Item">
-                        <button type="button" @click="removeItem(index)" class="remove-btn">-</button>
+                        <input v-model="newCard.items[index]" placeholder="Item" :disabled="isFirstColumnLocked">
+                        <button type="button" @click="removeItem(index)" class="remove-btn" :disabled="isFirstColumnLocked">-</button>
                     </div>
-                    <button type="button" @click="addItem" class="add-btn">+ Add Item</button>
-                    <button type="submit" :disabled="isInvalidCard">Add Card</button>
+                    <button type="button" @click="addItem" class="add-btn" :disabled="isFirstColumnLocked">+ Add Item</button>
+                    <button type="submit" :disabled="isInvalidCard || isAddButtonDisabled || isFirstColumnLocked">Add Card</button>
                     <div v-if="isInvalidCard" class="error-message">
-    Card must have 3-5 items and a title
-</div>
+                        Card must have 3-5 items and a title
+                    </div>
                 </form>
                 <div class="cards-container">
                     <note-card 

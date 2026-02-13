@@ -85,3 +85,36 @@
     font-size: 0.9rem;
     margin: 8px 0;
 }
+.columns {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.column {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.cards-container {
+    margin-top: 15px;
+    min-height: 400px;
+}
+
+.card {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}

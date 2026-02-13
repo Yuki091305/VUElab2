@@ -34,41 +34,40 @@
                         :title="card.title" 
                         :items="card.items"
                         :checked-items="card.checkedItems"
+                        :completed-at="card.completedAt"
                         @item-checked="handleItemChecked(card.id, $event)">
                     </note-card>
                 </div>
             </div>
             <div class="column second-column">
-    <h2>Second Column</h2>
-    <div class="cards-container">
-        <note-card 
-            v-for="card in columns.second" 
-            :key="card.id"
-            :title="card.title" 
-            :items="card.items"
-            :checked-items="card.checkedItems"
-            @item-checked="handleItemChecked(card.id, $event)">
-        </note-card>
-    </div>
-</div>
+                <h2>Second Column</h2>
+                    <div class="cards-container">
+                        <note-card 
+                            v-for="card in columns.second" 
+                            :key="card.id"
+                            :title="card.title" 
+                            :items="card.items"
+                            :checked-items="card.checkedItems"
+                            :completed-at="card.completedAt"
+                            @item-checked="handleItemChecked(card.id, $event)">
+                        </note-card>
+                    </div>
+            </div>
             <div class="column third-column">
-    <h2>Third Column </h2>
-    <div class="cards-container">
-        <note-card 
-            v-for="card in columns.third" 
-            :key="card.id"
-            :title="card.title" 
-            :items="card.items"
-            :checked-items="card.checkedItems"
-            @item-checked="handleItemChecked(card.id, $event)">
-        </note-card>
-    </div>
-</div>
-            <button type="submit" :disabled="isInvalidCard || isAddButtonDisabled">
-                Add Card
-            </button>
+                <h2>Third Column </h2>
+                    <div class="cards-container">
+                        <note-card 
+                            v-for="card in columns.third" 
+                            :key="card.id"
+                            :title="card.title" 
+                            :items="card.items"
+                            :checked-items="card.checkedItems"
+                            :completed-at="card.completedAt"
+                            @item-checked="handleItemChecked(card.id, $event)">
+                        </note-card>
+                    </div>
+            </div>
         </div>
     </div>
-    <script src="js/app.js"></script>
 </body>
 </html>

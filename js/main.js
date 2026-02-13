@@ -19,13 +19,21 @@ Vue.component('note-card', {
                 <div class="progress-fill" :style="{ width: progress + '%' }"></div>
             </div>
             <div v-if="completedAt" class="completion-time">
-                Completed: {{ formatCompletionTime(completedAt) }}
+                Completed: {{ formattedDate }}
             </div>
         </div>
     `,
     computed: {
         progress() {
             return Math.round((this.checkedItems.length / this.items.length) * 100);
+        },
+        formattedDate() {
+            if (!this.completedAt) return '';
+            return new Date(this.completedAt).toLocaleString('ru-RU', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
         }
     }
 });
@@ -55,17 +63,18 @@ let app = new Vue({
             }
         },
         addNewCard() {
-    if (this.isInvalidCard || this.isAddButtonDisabled) return;
+            if (this.isInvalidCard || this.isAddButtonDisabled) return;
     
-    this.columns.first.push({
-        id: Date.now(),
-        title: this.newCard.title,
-        items: this.newCard.items.filter(item => item.trim() !== ''),
-        checkedItems: []
-    });
+            this.columns.first.push({
+                id: Date.now(),
+                title: this.newCard.title,
+                items: this.newCard.items.filter(item => item.trim() !== ''),
+                checkedItems: [],
+                completedAt: null 
+            });
     
-    this.resetNewCard();
-},
+            this.resetNewCard();
+        },
         resetNewCard() {
             this.newCard = {
                 title: '',

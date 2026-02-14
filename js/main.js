@@ -151,5 +151,19 @@ let app = new Vue({
             
             return isSecondColumnFull && hasCardOver50Percent;
         }
+    },
+    watch: {
+        columns: {
+            deep: true,
+            handler(newVal) {
+                localStorage.setItem('noteData', JSON.stringify(newVal));
+            }
+        }
+    },
+    mounted() {
+        const savedData = localStorage.getItem('noteData');
+        if (savedData) {
+            this.columns = JSON.parse(savedData);
+        }
     }
 });

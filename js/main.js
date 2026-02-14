@@ -127,30 +127,23 @@ let app = new Vue({
         
     },
     computed: {
-        isInvalidCard() {
-    const validItems = this.newCard.items.filter(i => i.trim() !== '');
-    return !this.newCard.title || 
-           validItems.length < 3 || 
-           validItems.length > 5;
-},
-        isAddButtonDisabled() {
-             return this.columns.first.length >= 3 || this.isFirstColumnLocked;
-        },
-        columnClasses() {
-        return {
-            'locked': this.isFirstColumnLocked
-        };
+    isInvalidCard() {
+        const validItems = this.newCard.items.filter(i => i.trim() !== '');
+        return !this.newCard.title || 
+               validItems.length < 3 || 
+               validItems.length > 5;
+    },
+    isAddButtonDisabled() {
+        return this.columns.first.length >= 3 || this.isFirstColumnLocked;
     },
     isFirstColumnLocked() {
         const isSecondColumnFull = this.columns.second.length >= 5;
-            
-            const hasCardOver50Percent = this.columns.first.some(card => {
-                const progress = card.checkedItems.length / card.items.length;
-                return progress > 0.5;
-            });
-            
-            return isSecondColumnFull && hasCardOver50Percent;
-        }
+        const hasCardOver50Percent = this.columns.first.some(card => {
+            const progress = card.checkedItems.length / card.items.length;
+            return progress > 0.5;
+        });
+        return isSecondColumnFull && hasCardOver50Percent;
+    },
     },
     watch: {
         columns: {
